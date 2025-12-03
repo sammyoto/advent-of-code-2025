@@ -21,14 +21,17 @@ fn load_puzzle_input() -> Vec<String> {
 fn sum_invalid_ids(ids: &Vec<String>) -> u128 {
     let mut invalid_id_sum: u128 = 0;
 
+    // loop over id ranges in file
     for id_range in ids {
         let mut id_iterator= id_range.split("-");
         let lower: u128 = id_iterator.next().unwrap().parse::<u128>().unwrap();
         let upper: u128 = id_iterator.next().unwrap().parse::<u128>().unwrap();
 
+        // loop over id range to get individual id strings
         for i in lower..upper + 1 {
             let id_str = i.to_string();
 
+            // loop through first half of string to get patterns
             for j in 0..id_str.len()/2 {
                 let mut pattern_match: bool = true;
                 let pattern = &id_str[0..j + 1];
@@ -37,6 +40,7 @@ fn sum_invalid_ids(ids: &Vec<String>) -> u128 {
                     continue;
                 }
 
+                // check string in increments of pattern.len() to check if string consists of only pattern repeating
                 for k in 0..id_str.len()/pattern.len() {
                     let check_start_index = k * pattern.len();
                     if pattern != &id_str[check_start_index..check_start_index + pattern.len()] {
@@ -47,6 +51,7 @@ fn sum_invalid_ids(ids: &Vec<String>) -> u128 {
                     }
                 }
 
+                // if pattern matches, add i and break
                 if pattern_match {
                     invalid_id_sum += i;
                     break;
