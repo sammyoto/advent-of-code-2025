@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
   
 fn main() {
-    let battery_banks: Vec<Vec<u64>> = load_battery_banks("src/test.txt");
+    let battery_banks: Vec<Vec<u64>> = load_battery_banks("src/puzzle_input.txt");
     println!("{}", sum_largest_joltages(&battery_banks, 12));
 }
 
@@ -32,12 +32,12 @@ fn find_largest_joltage(battery_bank: &Vec<u64>, num_batteries: usize) -> u64{
     // Loop over number of batteries
     for i in 0..num_batteries {
         // Stop looking at index where there are still enough batteries left to turn on
-        let end_search_index = battery_bank.len() - num_batteries + i;
+        let end_search_index = battery_bank.len() - num_batteries + i + 1;
         let mut curr_largest_voltage_index = 0;
 
         // If on first battery, start searching at Index 0
         if i == 0 {
-            for k in 0..battery_bank.len() - end_search_index {
+            for k in 0..end_search_index {
                 if battery_bank[k] > battery_bank[curr_largest_voltage_index] {
                     curr_largest_voltage_index = k;
                 }
