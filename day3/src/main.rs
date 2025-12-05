@@ -32,7 +32,7 @@ fn find_largest_joltage(battery_bank: &Vec<u64>, num_batteries: usize) -> u64{
     // Loop over number of batteries
     for i in 0..num_batteries {
         // Stop looking at index where there are still enough batteries left to turn on
-        let end_search_index = battery_bank.len() - num_batteries + i + 1;
+        let end_search_index = battery_bank.len() - num_batteries + i;
         let mut curr_largest_voltage_index = 0;
 
         // If on first battery, start searching at Index 0
@@ -66,7 +66,8 @@ fn find_largest_joltage(battery_bank: &Vec<u64>, num_batteries: usize) -> u64{
         // Add each multiplied number to the total voltage
         largest_possible_voltage += battery_bank[voltage_indices[i]] * multiplier;
     }
-
+    
+    println!("{}", largest_possible_voltage);
     largest_possible_voltage
 }
 
