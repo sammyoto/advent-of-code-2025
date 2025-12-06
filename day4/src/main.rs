@@ -24,5 +24,13 @@ fn load_puzzle_input(filename: &str) -> Vec<Vec<char>>{
 }
 
 fn count_rolls_accessable(paper_roll_grid: &Vec<Vec<char>>, adjacent_roll_threshold: usize) {
-    
+    // Loop through the grid
+    let colMax: usize = paper_roll_grid.len();
+    let rowMax: usize = paper_roll_grid[0].len(); 
+
+    for i in 0..paper_roll_grid.len() {
+        for j in 0..paper_roll_grid[i].len() {
+            
+        }
+    }
 }
