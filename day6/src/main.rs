@@ -40,7 +40,6 @@ fn load_puzzle_input(filename: &str) -> (Vec<Vec<u64>>, Vec<char>) {
     (numbers, chars)
 }
 
-// TODO
 fn load_cephalopod_input(filename: &str) -> Vec<Vec<char>> {
     let mut rows: Vec<Vec<char>> = Vec::new();
 
