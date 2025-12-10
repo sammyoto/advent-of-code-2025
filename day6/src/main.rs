@@ -5,7 +5,7 @@ fn main() {
     let input = load_puzzle_input("src/test.txt");
     let cephalopod_input = load_cephalopod_input("src/test.txt");
     println!("Normal Input: {:?}", input.0);
-    println!("Cephalopod Input: {:?}", cephalopod_input.0);
+    println!("Cephalopod Input: {:?}", cephalopod_input[cephalopod_input.len()-1]);
 
     let total = sum_all_functions(&input.0, &input.1);
     println!("{}", total);
@@ -40,32 +40,23 @@ fn load_puzzle_input(filename: &str) -> (Vec<Vec<u64>>, Vec<char>) {
 }
 
 // TODO
-fn load_cephalopod_input(filename: &str) -> (Vec<Vec<String>>, Vec<char>) {
-    let mut numbers: Vec<Vec<String>> = Vec::new();
-    let mut chars: Vec<char> = Vec::new();
+fn load_cephalopod_input(filename: &str) -> Vec<Vec<char>> {
+    let mut rows: Vec<Vec<char>> = Vec::new();
 
     let file = File::open(filename).unwrap();
     let reader = BufReader::new(file);
-    let mut lines = reader.lines().peekable();
+    let lines = reader.lines();
 
-    while let Some(line) = lines.next() {
-        let is_last = lines.peek().is_none();
-
-        if is_last {
-            for ch in line.unwrap().split_whitespace() {
-                let value: char = ch.parse().unwrap();
-                chars.push(value);
-            }
-        } else {
-            let mut row = Vec::new();
-            for str in line.unwrap().split_whitespace() {
-                let value: String = str.parse().unwrap();
-                row.push(value);
-            }
-            numbers.push(row);
+    for line in lines {
+        let mut chars: Vec<char> = Vec::new();
+        for ch in line.unwrap().chars() {
+            let value: char = ch;
+            chars.push(value);
         }
+        rows.push(chars);
     }
-    (numbers, chars)
+
+    rows
 }
 
 fn sum_all_functions(numbers: &Vec<Vec<u64>>, operators: &Vec<char>) -> u64 {
@@ -88,8 +79,19 @@ fn sum_all_functions(numbers: &Vec<Vec<u64>>, operators: &Vec<char>) -> u64 {
     total
 }
 
-fn cephalopod_sum(numbers: &Vec<Vec<String>>, operators: &Vec<char>) -> u64 {
+fn cephalopod_sum(numbers: &mut Vec<Vec<char>>) -> u64 {
     let mut total: u64 = 0;
+
+    // Remove operators from numbers
+    let operators =  numbers.remove(numbers.len() - 1);
+
+    // Col
+    for i in 0..numbers.len() {
+    // Row
+        for j in 0..numbers[0].len() {
+            
+        }
+    }
 
     total
 }
