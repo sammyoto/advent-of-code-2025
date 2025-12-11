@@ -24,3 +24,7 @@ fn load_puzzle_input(filename: &str) -> Vec<Vec<char>> {
 
     rows
 }
+
+fn count_tachyon_beam_splits(tachyon_manifold: Vec<Vec<char>>) {
+    
+}
