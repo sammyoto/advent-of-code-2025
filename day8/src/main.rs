@@ -37,7 +37,19 @@ fn load_puzzle_input(filename: &str) -> HashMap<usize, Coordinates> {
 
 fn get_circuits(proximity_map: HashMap<usize, usize>) {
     let mut circuits: Vec<Vec<usize>> = Vec::new();
-    
+    let mut connected_boxes: Vec<usize> = Vec::new();
+
+    // Loop over each electric box and its closest box
+    for (electric_box, closest_box) in proximity_map {
+        let mut circuit: Vec<usize> = Vec::new();
+        let mut curr_electric_box: usize = electric_box;
+        let mut curr_closest_box: usize = closest_box;
+
+        // Check if connected boxes contains the box you're checking
+        while !connected_boxes.contains(&curr_electric_box) {
+            
+        }
+    }
 }
 
 // Proximity map maps the key of an electric box to the key of the electric box closest to it
