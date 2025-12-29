@@ -11,8 +11,8 @@ struct Coordinates {
 }
 
 fn main() {
-    let puzzle_input: HashMap<usize, Coordinates> = load_puzzle_input("src/test.txt");
-    println!("{:?}", puzzle_input.get(&0).unwrap());
+    let answer = calculate_answer();
+    println!("Answer 1: {}", answer);
 }
 
 
@@ -35,21 +35,69 @@ fn load_puzzle_input(filename: &str) -> HashMap<usize, Coordinates> {
     coordinates
 }
 
-fn get_circuits(proximity_map: HashMap<usize, usize>) {
+fn get_circuits(proximity_map: HashMap<usize, usize>) -> Vec<Vec<usize>>{
     let mut circuits: Vec<Vec<usize>> = Vec::new();
-    let mut connected_boxes: Vec<usize> = Vec::new();
+    let mut circuit_map: HashMap<usize, usize> = HashMap::new();
+    let mut circuit_counter: usize = 0;
 
     // Loop over each electric box and its closest box
     for (electric_box, closest_box) in proximity_map {
-        let mut circuit: Vec<usize> = Vec::new();
-        let mut curr_electric_box: usize = electric_box;
-        let mut curr_closest_box: usize = closest_box;
+        // 1. Electric box and closest box are both not in a circuit
+        if !circuit_map.contains_key(&electric_box) && !circuit_map.contains_key(&closest_box) {
+            // Add boxes to a circuit and push it to circuits
+            let mut circuit: Vec<usize> = Vec::new();
+            circuit.push(electric_box);
+            circuit.push(closest_box);
+            circuits.push(circuit);
 
-        // Check if connected boxes contains the box you're checking
-        while !connected_boxes.contains(&curr_electric_box) {
-            
+            // Reflect this in circuit map
+            circuit_map.insert(electric_box, circuit_counter);
+            circuit_map.insert(closest_box, circuit_counter);
+
+            // Increment circuit counter
+            circuit_counter += 1;
         }
+        // 2. Electric box and closest box are both in a circuit
+        else if circuit_map.contains_key(&electric_box) && circuit_map.contains_key(&closest_box) {
+            // We want to merge the two circuits and remap the circuit map
+            if circuit_map.get(&electric_box).unwrap() != circuit_map.get(&closest_box).unwrap() {
+                // Get a clone of the closest box's circuit
+                let mut closest_circuit = circuits[*circuit_map.get(&closest_box).unwrap()].clone();
+                // Append this to the electric box's circuit
+                circuits[*circuit_map.get(&electric_box).unwrap()].append(&mut closest_circuit);
+                // Delete the circuit at closest box
+                circuits.remove(*circuit_map.get(&closest_box).unwrap());
+                // Remake the circuit map, likely an easier way to do this but for now remake the whole map
+                circuit_map.clear();
+                for i in 0..circuits.len() {
+                    for j in 0..circuits[i].len() {
+                        circuit_map.insert(circuits[i][j], i);
+                    }
+                }
+                circuit_counter = circuits.len() - 1;
+            }
+        }
+        // 3. Electric box is in a circuit
+        else if circuit_map.contains_key(&electric_box) {
+            // Push closest box to the circuit containing electric box
+            let circuit_index: usize = *circuit_map.get(&electric_box).unwrap();
+            circuits[circuit_index].push(closest_box);
+            // Reflect this in circuit map
+            circuit_map.insert(closest_box, circuit_index);
+        }
+        // 4. Closest box is in a circuit
+        else if circuit_map.contains_key(&closest_box) {
+            // Push electric box to the circuit containing closest box
+            let circuit_index: usize = *circuit_map.get(&closest_box).unwrap();
+            circuits[circuit_index].push(electric_box);
+            // Reflect this in circuit map
+            circuit_map.insert(electric_box, circuit_index);
+        }
+        
     }
+
+    println!("{:?}", circuits);
+    circuits
 }
 
 // Proximity map maps the key of an electric box to the key of the electric box closest to it
@@ -84,4 +132,11 @@ fn get_proximity_map(filename: &str) -> HashMap<usize, usize>{
 
 fn calculate_euclidian_distance(p1: &Coordinates, p2: &Coordinates) -> f32 {
     (((p1.x - p2.x).pow(2) + (p1.y - p2.y).pow(2) + (p1.z - p2.z).pow(2)) as f32).sqrt()
+}
+
+fn calculate_answer() -> usize {
+    let circuits = get_circuits(get_proximity_map("src/puzzle_input.txt"));
+    let mut circuit_sizes: Vec<usize> = circuits.iter().map(|x| x.len()).collect();
+    circuit_sizes.sort_by(|a, b| b.cmp(a));
+    circuit_sizes[0] * circuit_sizes[1] * circuit_sizes[2]
 }
